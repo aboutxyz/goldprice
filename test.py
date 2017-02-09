@@ -1,10 +1,5 @@
 # coding:utf-8
-import json
-import re
-import requests
+from mako.template import Template
 
-with open('goldtest.json', 'r')as f:
-    for i in f:
-        data = json.loads(i, "utf-8")
-        for j in data:
-            print j
+mytemplate = Template("hello world!")
+print(mytemplate.render())
