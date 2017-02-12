@@ -1,40 +1,112 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>ECharts</title>
-    <!-- 引入 echarts.js -->
-    <script src=${ url_for('static', filename='js/echarts.min.js') }></script>
-</head>
-<body>
-    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="main" style="width: 600px;height:400px;"></div>
-    <script type="text/javascript">
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
-
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: 'ECharts 入门示例'
-            },
-            tooltip: {},
-            legend: {
-                data:['销量']
-            },
-            xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-            },
-            yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-    </script>
-</body>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8"> 
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+	   <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+			var dom = document.getElementById("container");
+			var myChart = echarts.init(dom);
+			var app = {};
+			option = null;
+			$.get("data.json",function (data) {
+				myChart.setOption(option = {
+					title: {
+						text: 'Beijing AQI'
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					xAxis: {
+						data: data.map(function (item) {
+							return item[0];
+						})
+					},
+					yAxis: {
+						splitLine: {
+							show: false
+						}
+					},
+					toolbox: {
+						left: 'center',
+						feature: {
+							dataZoom: {
+								yAxisIndex: 'none'
+							},
+							restore: {},
+							saveAsImage: {}
+						}
+					},
+					dataZoom: [{
+						startValue: '2014-06-01'
+					}, {
+						type: 'inside'
+					}],
+					visualMap: {
+						top: 10,
+						right: 10,
+						pieces: [{
+							gt: 0,
+							lte: 50,
+							color: '#096'
+						}, {
+							gt: 50,
+							lte: 100,
+							color: '#ffde33'
+						}, {
+							gt: 100,
+							lte: 150,
+							color: '#ff9933'
+						}, {
+							gt: 150,
+							lte: 200,
+							color: '#cc0033'
+						}, {
+							gt: 200,
+							lte: 300,
+							color: '#660099'
+						}, {
+							gt: 300,
+							color: '#7e0023'
+						}],
+						outOfRange: {
+							color: '#999'
+						}
+					},
+					series: {
+						name: 'Beijing AQI',
+						type: 'line',
+						data: data.map(function (item) {
+							return item[1];
+						}),
+						markLine: {
+							silent: true,
+							data: [{
+								yAxis: 50
+							}, {
+								yAxis: 100
+							}, {
+								yAxis: 150
+							}, {
+								yAxis: 200
+							}, {
+								yAxis: 300
+							}]
+						}
+					}
+				});
+			});;
+			if (option && typeof option === "object") {
+				myChart.setOption(option, true);
+			}
+       </script>
+   </body>
 </html>
